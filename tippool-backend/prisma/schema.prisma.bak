@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ENCARGADO
+  MOZO
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  nombre    String
+  apellido  String
+  rol       Role
+  activo    Boolean  @default(true)
+  fotoPerfil String?
+  pushEnabled Boolean @default(true)
+  nuevoRepartoNotif Boolean @default(true)
+  propinaRegistradaNotif Boolean @default(true)
+  checkinsEmpleadosNotif Boolean @default(false)
+  sonidoEnabled Boolean @default(true)
+  vibracionEnabled Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  checkins  CheckIn[]
+  propinasAsignadas RepartoDetalle[]
+
+  @@map("users")
+}
+
+model CheckIn {
+  id        String    @id @default(uuid())
+  userId    String
+  entrada   DateTime
+  salida    DateTime?
+  horasTrabajadas Float?
+  fecha     DateTime  @default(now())
+  
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("checkins")
+}
+
+model Propina {
+  id          String   @id @default(uuid())
+  monto       Float
+  metodoPago  String   // "TRANSFERENCIA", "QR", "EFECTIVO"
+  fecha       DateTime @default(now())
+  procesada   Boolean  @default(false)
+  
+  repartos    RepartoDetalle[]
+
+  @@map("propinas")
+}
+
+model RepartoDetalle {
+  id         String   @id @default(uuid())
+  propinaId  String
+  userId     String
+  montoAsignado Float
+  horasTrabajadas Float
+  puntosRol  Int      // Multiplicador según rol
+  fecha      DateTime @default(now())
+  
+  propina    Propina  @relation(fields: [propinaId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("repartos_detalle")
+}
