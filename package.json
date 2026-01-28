@@ -1,0 +1,22 @@
+{
+  "name": "tippool-netlify",
+  "version": "1.0.0",
+  "description": "Tippool Serverless Functions for Netlify",
+  "scripts": {
+    "build": "tsc",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@netlify/functions": "^2.0.0",
+    "@prisma/client": "^5.0.0",
+    "bcrypt": "^5.1.0",
+    "jsonwebtoken": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.1",
+    "@types/node": "^18.15.0",
+    "prisma": "^5.0.0",
+    "typescript": "^5.0.0"
+  }
+}
