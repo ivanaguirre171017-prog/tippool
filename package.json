@@ -4,7 +4,7 @@
   "description": "Tippool Serverless Functions for Netlify",
   "scripts": {
     "build": "tsc",
-    "postinstall": "npx prisma generate --schema=./tippool-backend/prisma/schema.prisma"
+    "postinstall": "prisma generate --schema=./tippool-backend/prisma/schema.prisma"
   },
   "dependencies": {
     "@netlify/functions": "^2.0.0",
