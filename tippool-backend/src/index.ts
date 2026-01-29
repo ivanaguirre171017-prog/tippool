@@ -36,7 +36,11 @@ app.get('/', (req, res) => {
 // Error handling - MUST be last
 app.use(errorHandler);
 
-// Start server
-app.listen(Number(PORT), '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
-});
+// Start server only if not importing for serverless
+if (process.env.NODE_ENV !== 'production' && !process.env.NETLIFY) {
+    app.listen(Number(PORT), '0.0.0.0', () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+export { app };

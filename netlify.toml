@@ -1,5 +1,5 @@
 [build]
-  # Frontend build command (Expo Web)
+  # Comando de construcción del Frontend (Expo Web)
   command = "cd tippool-app && npm install && npx expo export:web"
   publish = "tippool-app/dist"
   
@@ -10,30 +10,20 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
   
-# SPA redirect rules - prevent 404 on refresh
+# Reglas de redirección para SPA - prevenir error 404 al recargar
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
   force = false
   
-# API redirects for cleaner URLs (optional)
+# Redirecciones de API para URLs más limpias y para apuntar a la función serverless
 [[redirects]]
-  from = "/api/v1/auth/*"
-  to = "/.netlify/functions/auth/:splat"
-  status = 200
-  
-[[redirects]]
-  from = "/api/v1/checkin/*"
-  to = "/.netlify/functions/checkin/:splat"
-  status = 200
-  
-[[redirects]]
-  from = "/api/v1/reparto/*"
-  to = "/.netlify/functions/reparto/:splat"
+  from = "/api/*"
+  to = "/.netlify/functions/api"
   status = 200
 
-# Headers for security and PWA
+# Headers por seguridad y PWA
 [[headers]]
   for = "/*"
   [headers.values]
