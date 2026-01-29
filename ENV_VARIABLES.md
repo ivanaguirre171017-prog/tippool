@@ -1,105 +1,105 @@
-# Environment Variables for Netlify Production
+# Variables de Entorno para Producción en Netlify
 
-## Required Variables
+## Variables Requeridas
 
-Configure these environment variables in your Netlify dashboard (Site settings → Environment variables):
+Configura estas variables de entorno en tu panel de control de Netlify (Configuración del sitio → Variables de entorno):
 
-### Database
+### Base de Datos
 ```
 DATABASE_URL=postgresql://user:password@host:5432/database?pgbouncer=true&connection_limit=1
 ```
-**Note**: For Supabase, use the "Transaction" pooling connection string. For Neon, use the pooled connection string.
+**Nota**: Para Supabase, usa la cadena de conexión de "Transaction" pooling. Para Neon, usa la cadena de conexión "pooled".
 
-### Authentication
+### Autenticación
 ```
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+JWT_SECRET=tu-clave-secreta-jwt-cambiala-en-produccion
 ```
-**Important**: Generate a strong random secret for production.
+**Importante**: Genera un secreto aleatorio fuerte para producción.
 
-### Cloudinary (Image Upload)
+### Cloudinary (Subida de Imágenes)
 ```
-CLOUDINARY_CLOUD_NAME=your-cloud-name
-CLOUDINARY_API_KEY=your-api-key
-CLOUDINARY_API_SECRET=your-api-secret
+CLOUDINARY_CLOUD_NAME=tu-cloud-name
+CLOUDINARY_API_KEY=tu-api-key
+CLOUDINARY_API_SECRET=tu-api-secret
 ```
 
-### Frontend URL
+### URL del Frontend
 ```
-FRONTEND_URL=https://your-site-name.netlify.app
+FRONTEND_URL=https://tu-nombre-de-sitio.netlify.app
 ```
-This will be your Netlify site URL once deployed.
+Esta será la URL de tu sitio en Netlify una vez desplegado.
 
-## Optional Variables
+## Variables Opcionales
 
-### Direct Database URL (for migrations)
+### URL Directa de Base de Datos (para migraciones)
 ```
 DIRECT_URL=postgresql://user:password@host:5432/database
 ```
-Only needed if you want to run migrations directly (not through connection pooler).
+Solo es necesaria si quieres ejecutar migraciones directamente (no a través del connection pooler).
 
-## Migration Steps
+## Pasos de Migración
 
-### 1. Set up Supabase/Neon Database
+### 1. Configurar Base de Datos Supabase/Neon
 
-**Option A: Supabase**
-1. Create a new project at https://supabase.com
-2. Go to Settings → Database
-3. Copy the "Transaction" pooling connection string
-4. Use this as your `DATABASE_URL`
+**Opción A: Supabase**
+1. Crea un nuevo proyecto en https://supabase.com
+2. Ve a Settings → Database
+3. Copia la cadena de conexión "Transaction" pooling
+4. Úsala como tu `DATABASE_URL`
 
-**Option B: Neon**
-1. Create a new project at https://neon.tech
-2. Copy the pooled connection string
-3. Use this as your `DATABASE_URL`
+**Opción B: Neon**
+1. Crea un nuevo proyecto en https://neon.tech
+2. Copia la cadena de conexión "pooled"
+3. Úsala como tu `DATABASE_URL`
 
-### 2. Run Migrations
+### 2. Ejecutar Migraciones
 
-From your local machine:
+Desde tu máquina local:
 ```bash
-# Set the DATABASE_URL to your cloud database
-export DATABASE_URL="your-cloud-database-url"
+# Establece la DATABASE_URL a tu base de datos en la nube
+export DATABASE_URL="tu-url-de-base-de-datos-cloud"
 
-# Generate Prisma Client
+# Generar Prisma Client
 npx prisma generate
 
-# Run migrations
+# Ejecutar migraciones
 npx prisma migrate deploy
 
-# (Optional) Seed initial data
+# (Opcional) Sembrar datos iniciales
 npx prisma db seed
 ```
 
-### 3. Configure Netlify
+### 3. Configurar Netlify
 
-1. Push your code to GitHub
-2. Connect your repository to Netlify
-3. Add all environment variables in Netlify dashboard
-4. Deploy!
+1. Sube tu código a GitHub
+2. Conecta tu repositorio a Netlify
+3. Añade todas las variables de entorno en el panel de Netlify
+4. ¡Despliega!
 
-## API Endpoint Changes
+## Cambios en Endpoints de API
 
-The frontend needs to update API calls from:
+El frontend necesita actualizar las llamadas a la API de:
 ```
 http://TU_IP:5000/api/v1/auth/login
 ```
 
-To:
+A:
 ```
-https://your-site-name.netlify.app/api/v1/auth/login
-```
-
-Or directly to functions:
-```
-https://your-site-name.netlify.app/.netlify/functions/auth/login
+https://tu-nombre-de-sitio.netlify.app/api/v1/auth/login
 ```
 
-The `netlify.toml` file includes redirects to make `/api/v1/*` work seamlessly.
+O directamente a las funciones:
+```
+https://tu-nombre-de-sitio.netlify.app/.netlify/functions/auth/login
+```
 
-## PWA Configuration
+El archivo `netlify.toml` incluye redirecciones para hacer que `/api/v1/*` funcione sin problemas.
 
-The app is configured as a Progressive Web App (PWA). Users can:
-1. Visit the Netlify URL on their mobile browser
-2. Tap "Add to Home Screen"
-3. Use it like a native app
+## Configuración PWA
 
-No app store submission required for initial deployment!
+La aplicación está configurada como una Progressive Web App (PWA). Los usuarios pueden:
+1. Visitar la URL de Netlify en su navegador móvil
+2. Tocar "Añadir a pantalla de inicio"
+3. Úsala como una aplicación nativa
+
+¡No se requiere envío a tiendas de aplicaciones para el despliegue inicial!

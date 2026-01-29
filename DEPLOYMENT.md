@@ -1,180 +1,181 @@
-# Tippool - Deployment Guide
+# Tippool - Guía de Despliegue
 
-## Quick Start Deployment
+## Despliegue Rápido
 
-### Prerequisites
-- GitHub account
-- Netlify account (free tier works)
-- Supabase or Neon account (free tier works)
+### Prerrequisitos
+- Cuenta de GitHub
+- Cuenta de Netlify (el plan gratuito funciona)
+- Cuenta de Supabase o Neon (el plan gratuito funciona)
 
-### 1. Install Dependencies
+### 1. Instalar Dependencias
 
 ```bash
-# In the root directory
+# En el directorio raíz
 npm install
 
-# In the frontend directory
+# En el directorio frontend
 cd tippool-app
 npm install
 cd ..
 ```
 
-### 2. Set Up Cloud Database
+### 2. Configurar Base de Datos en la Nube
 
-#### Option A: Supabase (Recommended)
-1. Go to https://supabase.com and create a free account
-2. Create a new project
-3. Go to **Settings** → **Database**
-4. Under "Connection string", select **Transaction** mode
-5. Copy the connection string (it should include `?pgbouncer=true`)
+#### Opción A: Supabase (Recomendado)
+1. Ve a https://supabase.com y crea una cuenta gratuita
+2. Crea un nuevo proyecto
+3. Ve a **Settings** → **Database**
+4. Bajo "Connection string", selecciona el modo **Transaction**
+5. Copia la cadena de conexión (debería incluir `?pgbouncer=true`)
 
-#### Option B: Neon
-1. Go to https://neon.tech and create a free account
-2. Create a new project
-3. Copy the **Pooled connection** string
+#### Opción B: Neon
+1. Ve a https://neon.tech y crea una cuenta gratuita
+2. Crea un nuevo proyecto
+3. Copia la cadena de conexión **Pooled connection**
 
-### 3. Run Database Migrations
+### 3. Ejecutar Migraciones de Base de Datos
 
 ```bash
-# Set your database URL (use the one from step 2)
-export DATABASE_URL="postgresql://user:password@host:5432/database?pgbouncer=true"
+# Establece tu URL de base de datos (usa la del paso 2)
+export DATABASE_URL="postgresql://usuario:password@host:5432/database?pgbouncer=true"
 
-# Generate Prisma client
+# Generar cliente Prisma
 npx prisma generate
 
-# Run migrations
+# Ejecutar migraciones
 npx prisma migrate deploy
 
-# Optional: Create initial admin user
-# You'll need to do this manually in the database or via Prisma Studio
+# Opcional: Crear usuario administrador inicial
+# Necesitarás hacer esto manualmente en la base de datos o vía Prisma Studio
 npx prisma studio
 ```
 
-### 4. Deploy to Netlify
-
-#### A. Push to GitHub
+### 4. Desplegar en Netlify
+#### A. Subir a GitHub
 ```bash
+# Asegúrate de que netlify.toml y package.json estén actualizados
 git add .
-git commit -m "Ready for production deployment"
+git commit -m "Configurar despliegue en Netlify con generación automática de Prisma"
 git push origin main
 ```
+_Nota: El archivo `netlify.toml` está configurado para ejecutar automáticamente `prisma generate` durante el proceso de construcción, por lo que no necesitas un script `postinstall`._
 
-#### B. Connect to Netlify
-1. Go to https://app.netlify.com
-2. Click **"Add new site"** → **"Import an existing project"**
-3. Choose **GitHub** and authorize Netlify
-4. Select your **Tippool** repository
-5. Netlify will auto-detect the configuration from `netlify.toml`
-6. Click **"Deploy site"**
+#### B. Conectar a Netlify
+1. Ve a https://app.netlify.com
+2. Haz clic en **"Add new site"** → **"Import an existing project"**
+3. Elige **GitHub** y autoriza a Netlify
+4. Selecciona tu repositorio **Tippool**
+5. Netlify detectará automáticamente la configuración de `netlify.toml`
+6. Haz clic en **"Deploy site"**
 
-#### C. Configure Environment Variables
-In your Netlify site dashboard:
-1. Go to **Site settings** → **Environment variables**
-2. Add the following variables:
+#### C. Configurar Variables de Entorno
+En el panel de tu sitio en Netlify:
+1. Ve a **Site settings** → **Environment variables**
+2. Añade las siguientes variables:
 
-| Variable | Example Value | Where to Get It |
+| Variable | Valor Ejemplo | Dónde obtenerlo |
 |----------|---------------|-----------------|
-| `DATABASE_URL` | `postgresql://user:pass@host:5432/db?pgbouncer=true` | Supabase/Neon dashboard |
-| `JWT_SECRET` | `your-super-secret-key-min-32-chars` | Generate with `openssl rand -base64 32` |
-| `CLOUDINARY_CLOUD_NAME` | `your-cloud-name` | Cloudinary dashboard |
-| `CLOUDINARY_API_KEY` | `123456789012345` | Cloudinary dashboard |
-| `CLOUDINARY_API_SECRET` | `abcdefghijklmnopqrstuvwxyz` | Cloudinary dashboard |
-| `FRONTEND_URL` | `https://tippool.netlify.app` | Your Netlify site URL |
+| `DATABASE_URL` | `postgresql://user:pass@host:5432/db?pgbouncer=true` | Panel de Supabase/Neon |
+| `JWT_SECRET` | `tu-calve-secreta-min-32-chars` | Genera con `openssl rand -base64 32` |
+| `CLOUDINARY_CLOUD_NAME` | `tu-cloud-name` | Panel de Cloudinary |
+| `CLOUDINARY_API_KEY` | `123456789012345` | Panel de Cloudinary |
+| `CLOUDINARY_API_SECRET` | `abcdefghijklmnopqrstuvwxyz` | Panel de Cloudinary |
+| `FRONTEND_URL` | `https://tippool.netlify.app` | Tu URL de sitio Netlify |
 
-3. Click **"Save"**
-4. Go to **Deploys** and click **"Trigger deploy"** → **"Clear cache and deploy site"**
+3. Haz clic en **"Save"**
+4. Ve a **Deploys** y haz clic en **"Trigger deploy"** → **"Clear cache and deploy site"**
 
-### 5. Update Frontend API URL
+### 5. Actualizar URL de API del Frontend
 
-Find the API configuration in your frontend code (usually in a config or constants file) and update:
+Encuentra la configuración de la API en tu código frontend (usualmente en un archivo de configuración o constantes) y actualiza:
 
-**Before:**
+**Antes:**
 ```typescript
 const API_BASE_URL = 'http://TU_IP:5000/api/v1';
 ```
 
-**After:**
+**Después:**
 ```typescript
-const API_BASE_URL = 'https://your-site-name.netlify.app/api/v1';
+const API_BASE_URL = 'https://tu-nombre-de-sitio.netlify.app/api/v1';
 ```
 
-Then commit and push:
+Luego haz commit y push:
 ```bash
 git add .
-git commit -m "Update API URL for production"
+git commit -m "Actualizar URL de API para producción"
 git push origin main
 ```
 
-Netlify will automatically redeploy.
+Netlify redeplegará automáticamente.
 
-### 6. Test Your Deployment
+### 6. Probar tu Despliegue
 
-1. Visit your Netlify URL (e.g., `https://tippool.netlify.app`)
-2. Test login functionality
-3. Test check-in/check-out
-4. Test tip distribution (as ENCARGADO)
+1. Visita tu URL de Netlify (ej. `https://tippool.netlify.app`)
+2. Prueba la funcionalidad de inicio de sesión
+3. Prueba check-in/check-out
+4. Prueba el reparto de propinas (como ENCARGADO)
 
-### 7. Install as PWA on Mobile
+### 7. Instalar como PWA en Móvil
 
 **iOS:**
-1. Open Safari and visit your Netlify URL
-2. Tap the Share button
-3. Scroll down and tap **"Add to Home Screen"**
-4. Tap **"Add"**
+1. Abre Safari y visita tu URL de Netlify
+2. Toca el botón Compartir
+3. Baja y toca **"Añadir a pantalla de inicio"**
+4. Toca **"Añadir"**
 
 **Android:**
-1. Open Chrome and visit your Netlify URL
-2. Tap the menu (three dots)
-3. Tap **"Add to Home screen"**
-4. Tap **"Add"**
+1. Abre Chrome y visita tu URL de Netlify
+2. Toca el menú (tres puntos)
+3. Toca **"Añadir a pantalla de inicio"**
+4. Toca **"Añadir"**
 
-## Troubleshooting
+## Solución de Problemas
 
-### Build Fails on Netlify
-- Check the build logs in Netlify dashboard
-- Ensure all dependencies are in `package.json`
-- Verify `netlify.toml` configuration
+### Fallo de Construcción en Netlify
+- Revisa los logs de construcción en el panel de Netlify
+- Asegúrate de que todas las dependencias estén en `package.json`
+- Verifica la configuración de `netlify.toml`
 
-### Database Connection Errors
-- Verify `DATABASE_URL` is correct
-- Ensure you're using the **pooled/transaction** connection string
-- Check that migrations have been run
+### Errores de Conexión a Base de Datos
+- Verifica que `DATABASE_URL` sea correcta
+- Asegúrate de estar usando la cadena de conexión **pooled/transaction**
+- Revisa que las migraciones se hayan ejecutado
 
-### API Returns 404
-- Verify the Netlify Functions are deployed (check Functions tab in dashboard)
-- Check that API URLs in frontend match the Netlify site URL
-- Review `netlify.toml` redirects
+### API Devuelve 404
+- Verifica que las Netlify Functions estén desplegadas (revisa la pestaña Functions en el panel)
+- Revisa que las URLs de la API en el frontend coincidan con la URL del sitio Netlify
+- Revisa las redirecciones en `netlify.toml`
 
-### Images Not Uploading
-- Verify Cloudinary credentials are correct
-- Check that all three Cloudinary variables are set
+### Imágenes No Se Suben
+- Verifica que las credenciales de Cloudinary sean correctas
+- Revisa que las tres variables de Cloudinary estén establecidas
 
-## Custom Domain (Optional)
+## Dominio Personalizado (Opcional)
 
-1. In Netlify dashboard, go to **Domain settings**
-2. Click **"Add custom domain"**
-3. Follow instructions to configure DNS
-4. Update `FRONTEND_URL` environment variable with your custom domain
+1. En el panel de Netlify, ve a **Domain settings**
+2. Haz clic en **"Add custom domain"**
+3. Sigue las instrucciones para configurar DNS
+4. Actualiza la variable de entorno `FRONTEND_URL` con tu dominio personalizado
 
-## Monitoring
+## Monitoreo
 
 - **Netlify Analytics**: Site settings → Analytics
-- **Function Logs**: Functions tab → View logs
-- **Database Monitoring**: Supabase/Neon dashboard
+- **Function Logs**: Pestaña Functions → Ver logs
+- **Database Monitoring**: Panel de Supabase/Neon
 
-## Cost Estimate (Free Tier)
+## Estimación de Costos (Plan Gratuito)
 
-- **Netlify**: Free (100GB bandwidth, 300 build minutes/month)
-- **Supabase**: Free (500MB database, 2GB bandwidth)
-- **Neon**: Free (0.5GB storage, 100 hours compute)
-- **Cloudinary**: Free (25GB storage, 25GB bandwidth)
+- **Netlify**: Gratis (100GB ancho de banda, 300 minutos de construcción/mes)
+- **Supabase**: Gratis (500MB base de datos, 2GB ancho de banda)
+- **Neon**: Gratis (0.5GB almacenamiento, 100 horas computación)
+- **Cloudinary**: Gratis (25GB almacenamiento, 25GB ancho de banda)
 
-**Total**: $0/month for small to medium usage
+**Total**: $0/mes para uso pequeño a mediano
 
-## Support
+## Soporte
 
-For issues, check:
-1. Netlify build logs
-2. Netlify function logs
-3. Browser console for frontend errors
-4. Database connection in Supabase/Neon dashboard
+Para problemas, revisa:
+1. Logs de construcción de Netlify
+2. Logs de funciones de Netlify
+3. Consola del navegador para errores de frontend
+4. Conexión a base de datos en panel de Supabase/Neon

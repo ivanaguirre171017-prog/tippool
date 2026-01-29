@@ -1,6 +1,7 @@
 [build]
   # Comando de construcción del Frontend (Expo Web)
-  command = "cd tippool-app && npm install && npx expo export:web"
+  # Ejecutamos prisma generate explícitamente antes del build del frontend
+  command = "npx prisma generate --schema=./tippool-backend/prisma/schema.prisma && cd tippool-app && npm install && npx expo export:web"
   publish = "tippool-app/dist"
   
 [build.environment]
