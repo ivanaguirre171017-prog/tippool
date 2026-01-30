@@ -1,6 +1,6 @@
-import { prisma } from './prisma';
-import { hashPassword, comparePassword } from './password';
-import { generateToken } from './auth';
+import { prisma } from '../prisma';
+import { hashPassword, comparePassword } from '../password';
+import { generateToken } from '../auth';
 import { Role } from '@prisma/client';
 
 export class AuthService {

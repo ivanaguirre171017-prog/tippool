@@ -1,4 +1,4 @@
-import { prisma } from './prisma';
+import { prisma } from '../prisma';
 import { Role } from '@prisma/client';
 
 export class CheckInService {
