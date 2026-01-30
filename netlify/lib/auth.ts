@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { HandlerEvent } from '@netlify/functions';
-import { getAuthToken } from './utils';
+
 
 export interface JWTPayload {
     userId: string;
@@ -22,8 +22,4 @@ export const verifyToken = (token: string): JWTPayload | null => {
     }
 };
 
-export const getUserFromEvent = (event: HandlerEvent): JWTPayload | null => {
-    const token = getAuthToken(event);
-    if (!token) return null;
-    return verifyToken(token);
-};
+

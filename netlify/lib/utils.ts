@@ -1,4 +1,12 @@
 import { Handler, HandlerEvent, HandlerContext } from '@netlify/functions';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+
+export interface JWTPayload {
+    userId: string;
+    rol: string;
+}
 
 export interface NetlifyResponse {
     statusCode: number;
@@ -54,4 +62,14 @@ export const getAuthToken = (event: HandlerEvent): string | null => {
         return null;
     }
     return authHeader.substring(7);
+};
+
+export const getUserFromEvent = (event: HandlerEvent): JWTPayload | null => {
+    const token = getAuthToken(event);
+    if (!token) return null;
+    try {
+        return jwt.verify(token, JWT_SECRET) as JWTPayload;
+    } catch (error) {
+        return null;
+    }
 };
