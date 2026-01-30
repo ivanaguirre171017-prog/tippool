@@ -1,11 +1,11 @@
 [build]
   # Comando de construcción del Frontend (Expo Web)
   # Ejecutamos prisma generate explícitamente antes del build del frontend
-  command = "npm install && cd tippool-backend && npm install && npx prisma generate --schema=./prisma/schema.prisma && cd ../tippool-app && npm install --no-engine-strict && npx expo install react-dom react-native-web && npx expo export:web"
+  command = "npm install && cd tippool-backend && npm install && npx prisma generate --schema=./prisma/schema.prisma && cd ../tippool-app && npm install --no-engine-strict && npx expo install react-dom react-native-web && npx expo export"
   publish = "tippool-app/dist"
   
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
 
 [functions]
   directory = "netlify/functions"
